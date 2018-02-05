@@ -2,18 +2,57 @@ import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.function.Consumer;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtend2.lib.StringConcatenation;
+import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Exceptions;
+import org.eclipse.xtext.xbase.lib.InputOutput;
+import org.junit.Assert;
 import org.junit.Test;
+import org.xtext.example.mydsl.videoGen.MandatoryVideoSeq;
+import org.xtext.example.mydsl.videoGen.Media;
+import org.xtext.example.mydsl.videoGen.VideoDescription;
+import org.xtext.example.mydsl.videoGen.VideoGeneratorModel;
+import org.xtext.example.mydsl.videoGen.VideoSeq;
 
 @SuppressWarnings("all")
 public class VideoGenTest1 {
   @Test
   public void testLoadModel() {
-    throw new Error("Unresolved compilation problems:"
-      + "\nThe method or field medias is undefined for the type VideoGeneratorModel"
-      + "\nThere is no context to infer the closure\'s argument types from. Consider typing the arguments or put the closures into a typed context."
-      + "\nforEach cannot be resolved");
+    try {
+      final VideoGeneratorModel videoGen = new VideoGenHelper().loadVideoGenerator(URI.createURI("example1.videogen"));
+      Assert.assertNotNull(videoGen);
+      InputOutput.<String>println(videoGen.getInformation().getAuthorName());
+      final ArrayList<String> playlist = CollectionLiterals.<String>newArrayList();
+      final Consumer<Media> _function = (Media media) -> {
+        if ((media instanceof VideoSeq)) {
+          final VideoSeq video = ((VideoSeq) media);
+          if ((video instanceof MandatoryVideoSeq)) {
+            final VideoDescription desc = ((MandatoryVideoSeq)video).getDescription();
+            String _location = desc.getLocation();
+            String _plus = ("file \'" + _location);
+            String _plus_1 = (_plus + "\'");
+            playlist.add(_plus_1);
+          }
+        }
+      };
+      videoGen.getMedias().forEach(_function);
+      String playlistStr = "";
+      for (final String pl : playlist) {
+        String _playlistStr = playlistStr;
+        playlistStr = (_playlistStr + (pl + "\n"));
+      }
+      this.writeInFile("playlist.txt", playlistStr);
+      Process p = null;
+      String ffmpegCmd = this.ffmpegConcatenateCommand("/Users/macher1/git/teaching-MDE-MIAGE1718/VideoGenToolSuite/playlist.txt", "ro.mp4").toString();
+      InputOutput.<String>println(ffmpegCmd);
+      p = Runtime.getRuntime().exec(ffmpegCmd);
+      p.waitFor();
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
   }
   
   public void writeInFile(final String filename, final String data) {
