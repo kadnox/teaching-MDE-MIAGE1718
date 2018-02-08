@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class VideoGenTestJava1 {
 
 	}
 
-	public static void videoGenexec() {
+	public static void TP3() {
 
 		List<List<VideoDescription>> listvs = new ArrayList<>();
 		List<String> listId = new LinkedList<>();
@@ -117,7 +118,7 @@ public class VideoGenTestJava1 {
 
 	}
 
-	public void tp4() {
+	public void TP4() {
 		VideoGeneratorModel videoGen = new VideoGenHelper().loadVideoGenerator(URI.createURI("example1.videogen"));
 
 		for (VideoSeq vs : videoGen.getVideoseqs()) {
@@ -154,41 +155,42 @@ public class VideoGenTestJava1 {
 
 			}
 
-			
 		}
-		
-		System.out.println(location);
+		FileWriter f = null;
 		try {
-			FileWriter f = new FileWriter("videos.txt");
+			f = new FileWriter("videos.txt");
 			f.write(location);
-			f.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			if (f != null) {
+				f.close();
+			}
 		}
-		
-		openVideoFromFile("video.txt");
 
-		
-
-		String[] tabR2 = {};
-		Runtime runtimeFF2 = Runtime.getRuntime();
-		Process p2 = runtimeFF2.exec("ffmpeg -i test.mp4 2>&1| grep \"Duration\"");
-		System.out.println(p2.toString());
-		p2.waitFor();
+		openVideoFromFile("/home/yvann/IDMTP2/teaching-MDE-MIAGE1718/VideoGenToolSuite/video.txt",
+				"/home/yvann/IDMTP2/teaching-MDE-MIAGE1718/VideoGenToolSuite/video1.mp4");
 
 	}
 
-	public static void openVideoFromFile(String path) throws IOException, InterruptedException {
+	public static void openVideoFromFile(String textpath, String outputpath) throws IOException, InterruptedException {
 
 		Runtime runtimeFF = Runtime.getRuntime();
-		String[] tabff = {"ffmpeg","-f concat -i "+path+" -c copy videos.mp4"};
+		String[] tabff = { "/usr/bin/ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", textpath, "-c", "copy",
+				outputpath };
 		Process p = runtimeFF.exec(tabff);
+		InputStream inputStream = p.getInputStream();
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream), 1);
+		String line = "";
+		while ((line = bufferedReader.readLine()) != null) {
+			System.out.println(line);
+		}
+		inputStream.close();
 		p.waitFor();
 
-		Runtime runtime = Runtime.getRuntime();
-		String[] tab = { "vlc", "videos.mp4" };
-		Process p1 = runtime.exec(tab);
+		String[] tab = { "vlc", outputpath };
+		Process p1 = runtimeFF.exec(tab);
 		p1.waitFor();
 
 	}
@@ -255,7 +257,7 @@ public class VideoGenTestJava1 {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		videoGenexec();
+		TP3();
 	}
 
 }
