@@ -151,7 +151,7 @@ public class VideoGenTestJava1 {
 
 				int choix = (int) (Math.random() * (list.size() - 1));
 				VideoDescription video = list.get(choix);
-				location = location + "file " + video.getLocation() + "\n";
+				location = location + "file \'" + video.getLocation() + "\'\n";
 
 			}
 
@@ -160,7 +160,7 @@ public class VideoGenTestJava1 {
 		try {
 			f = new FileWriter("videos.txt");
 			f.write(location);
-		} catch (IOException e) {
+					} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
@@ -168,25 +168,18 @@ public class VideoGenTestJava1 {
 				f.close();
 			}
 		}
+		
 
-		openVideoFromFile("/home/yvann/IDMTP2/teaching-MDE-MIAGE1718/VideoGenToolSuite/video.txt",
-				"/home/yvann/IDMTP2/teaching-MDE-MIAGE1718/VideoGenToolSuite/video1.mp4");
+		openVideoFromFile("videos.txt", "video1.mp4");
 
 	}
 
 	public static void openVideoFromFile(String textpath, String outputpath) throws IOException, InterruptedException {
 
 		Runtime runtimeFF = Runtime.getRuntime();
-		String[] tabff = { "/usr/bin/ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", textpath, "-c", "copy",
-				outputpath };
+		String[] tabff = { "/usr/bin/ffmpeg", "-y" ,"-f" ,"concat" ,"-safe","0","-i",textpath,"-c", "copy",  outputpath};
 		Process p = runtimeFF.exec(tabff);
-		InputStream inputStream = p.getInputStream();
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream), 1);
-		String line = "";
-		while ((line = bufferedReader.readLine()) != null) {
-			System.out.println(line);
-		}
-		inputStream.close();
+		
 		p.waitFor();
 
 		String[] tab = { "vlc", outputpath };
@@ -257,7 +250,7 @@ public class VideoGenTestJava1 {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		TP3();
+		//TP3();
 	}
 
 }
