@@ -41,6 +41,10 @@ public class VideoGenTestJava1 {
 
 	}
 
+	/**
+	 * Dans cette méthode il est possible de récupérer une liste avec toutes les
+	 * variantes possible des vidéos rpovenant d'un fichier .videogen
+	 */
 	public static void TP3() {
 
 		List<List<VideoDescription>> listvs = new ArrayList<>();
@@ -130,7 +134,7 @@ public class VideoGenTestJava1 {
 
 	public static void TP2() throws IOException, InterruptedException {
 		String location = "";
-		String loc = "";
+		
 
 		VideoGeneratorModel videoGen = new VideoGenHelper().loadVideoGenerator(URI.createURI("example1.videogen"));
 
@@ -144,7 +148,8 @@ public class VideoGenTestJava1 {
 				double i = Math.random();
 				if (i > 0.5) {
 					location = location + "file " + ((OptionalVideoSeq) vs).getDescription().getLocation() + "\n";
-					loc += ((OptionalVideoSeq) vs).getDescription().getLocation() + " ";
+					
+					
 				}
 			}
 			if (vs instanceof AlternativeVideoSeq) {
@@ -161,7 +166,7 @@ public class VideoGenTestJava1 {
 		try {
 			f = new FileWriter("videos.txt");
 			f.write(location);
-					} catch (IOException e) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
@@ -169,12 +174,18 @@ public class VideoGenTestJava1 {
 				f.close();
 			}
 		}
-		
 
 		openVideoFromFile("videos.txt", "video1.mp4");
 
 	}
-
+	
+	/**
+	 * Méthode permettant de créer une variante aléatoire à partir d'un fichier videogen
+	 * @param textpath path vers ou se situe le fichier avec la liste des videos variante en txt
+	 * @param outputpath le path de sortie de video
+	 * @throws IOException si problème
+	 * @throws InterruptedException si problème
+	 */
 	public static void openVideoFromFile(String textpath, String outputpath) throws IOException, InterruptedException {
 
 		Runtime runtimeFF = Runtime.getRuntime();
@@ -188,7 +199,12 @@ public class VideoGenTestJava1 {
 		p1.waitFor();
 
 	}
-
+	
+	/**
+	 * Méthode permettant de cloner des listes imbriquées
+	 * @param list liste à cloner contenant des listes
+	 * @return la liste avec des listes imbriquées clonnée
+	 */
 	public static List<List<VideoDescription>> clone(List<List<VideoDescription>> list) {
 		List<List<VideoDescription>> listv = new ArrayList<>();
 		for (List<VideoDescription> l : list) {
@@ -198,7 +214,13 @@ public class VideoGenTestJava1 {
 		return listv;
 
 	}
-
+	
+	/**
+	 * Méthode permettant de créer un fichier csv avec la taille des variantes possible provenant d'un fichier .videogen
+	 * @param listId l'ensembre des ids des videos (trouvé par l'algorithme)
+	 * @param list la liste imbriqué des variantes de toutes les vidéos possibles
+	 * @throws IOException si problème
+	 */
 	public static void createCSVFromList(List<String> listId, List<List<VideoDescription>> list) throws IOException {
 		String premiere = listId.toString();
 		FileWriter fw = null;
@@ -241,29 +263,76 @@ public class VideoGenTestJava1 {
 
 	}
 	
-	
-	public static void createImage(String inputPath,String outputPath,int duration) {
+	/**
+	 * 
+	 * @param inputPath path de la video ou il faut créer un image
+	 * @param outputPath nom de l'image de sortie
+	 * @param duration duréee pour trouver le snapshot
+	 * @throws IOException si problème
+	 * @throws InterruptedException si problème
+	 */
+	public static void createImage(String inputPath,String outputPath,int duration,String directory) throws IOException, InterruptedException {
 		
 		Runtime runtimeFF = Runtime.getRuntime();
-		String[] tabff = { "/usr/bin/ffmpeg", "-y", "-i", inputPath, "-r", "1" ,"-t" ,"00:00:01","-ss", "00:00:"+ duration, "-f" , outputPath};
-		try {
-			
-			Process p = runtimeFF.exec(tabff);
-			p.waitFor();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		String[] tabff = { "/usr/bin/ffmpeg", "-y","-i", inputPath, "-r", "1" ,"-t" ,"00:00:01","-ss", "00:00:"+ duration, "-f","image2" , directory+"/"+outputPath+".png"};
+		Process p2 = null;
+		System.out.println("l\'image "+outputPath+" est créée");
 		
+		p2 = runtimeFF.exec(tabff);
+		p2.waitFor();
+	}
+	
+	
+	/**
+	 * Créer l'ensemble des images des vidéos, (une image par video) pour la visualisation sur le web le front
+	 */
+	public static void creerFichierImages() {
+		VideoGeneratorModel videoGen = new VideoGenHelper().loadVideoGenerator(URI.createURI("example1.videogen"));
+		String dirname = "image";
+		File dir = new File ("./"+dirname);
+		dir.mkdir();
+		for (Media vs : videoGen.getMedias()) {
+
+			if (vs instanceof MandatoryVideoSeq) {
+				try {
+					createImage(((MandatoryVideoSeq) vs).getDescription().getLocation() , ((MandatoryVideoSeq) vs).getDescription().getVideoid(), 10,dirname);
+				} catch (IOException | InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 
+			}
+
+			if (vs instanceof OptionalVideoSeq) {
+				try {
+					createImage(((OptionalVideoSeq) vs).getDescription().getLocation(), ((OptionalVideoSeq)vs).getDescription().getVideoid(), 10, dirname);
+				} catch (IOException | InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+			}
+			if (vs instanceof AlternativeVideoSeq) {
+				List<VideoDescription> list = ((AlternativeVideoSeq) vs).getVideodescs();
+
+				for(VideoDescription l : list) {
+					try {
+						createImage(l.getLocation(), l.getVideoid(), 10,dirname);
+					} catch (IOException | InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+
+			}
+
+		}
 	}
 	
 	public static void main(String[] args) {
 		try {
-			createImage("video/jori.mp4","testJ.png",10);
 			TP2();
+			creerFichierImages();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -273,7 +342,7 @@ public class VideoGenTestJava1 {
 		}
 		
 		
-		//TP3();
+		TP3();
 	}
 
 }
