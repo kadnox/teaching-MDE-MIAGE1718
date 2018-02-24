@@ -245,9 +245,29 @@ public class VideoGenTestJava1 {
 		}
 
 	}
-
+	
+	
+	public static void createImage(String inputPath,String outputPath,int duration) {
+		
+		Runtime runtimeFF = Runtime.getRuntime();
+		String[] tabff = { "/usr/bin/ffmpeg", "-y", "-i", inputPath, "-r", "1" ,"-t" ,"00:00:01","-ss", "00:00:"+ duration, "-f" , outputPath};
+		try {
+			
+			Process p = runtimeFF.exec(tabff);
+			p.waitFor();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 	public static void main(String[] args) {
 		try {
+			createImage("video/jori.mp4","testJ.png",10);
 			TP2();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -256,6 +276,8 @@ public class VideoGenTestJava1 {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		
 		//TP3();
 	}
 
