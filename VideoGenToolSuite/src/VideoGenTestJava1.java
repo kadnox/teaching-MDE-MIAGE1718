@@ -119,6 +119,11 @@ public class VideoGenTestJava1 {
 
 	}
 
+	//TP3 
+	public static void generateGif() {
+		
+	}
+	
 	public void TP4() {
 		VideoGeneratorModel videoGen = new VideoGenHelper().loadVideoGenerator(URI.createURI("example1.videogen"));
 
