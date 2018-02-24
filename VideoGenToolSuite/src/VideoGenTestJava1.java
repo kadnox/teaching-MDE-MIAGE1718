@@ -247,6 +247,7 @@ public class VideoGenTestJava1 {
 		Runtime runtimeFF = Runtime.getRuntime();
 		String[] tabff = { "/usr/bin/ffmpeg", "-y", "-i", inputPath, "-r", "1" ,"-t" ,"00:00:01","-ss", "00:00:"+ duration, "-f" , outputPath};
 		try {
+			
 			Process p = runtimeFF.exec(tabff);
 			p.waitFor();
 		} catch (IOException e) {
