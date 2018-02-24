@@ -1,3 +1,5 @@
+import static org.junit.Assert.assertNotNull;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
@@ -21,6 +23,7 @@ import org.junit.runners.ParentRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.xtext.example.mydsl.videoGen.AlternativeVideoSeq;
 import org.xtext.example.mydsl.videoGen.MandatoryVideoSeq;
+import org.xtext.example.mydsl.videoGen.Media;
 import org.xtext.example.mydsl.videoGen.OptionalVideoSeq;
 import org.xtext.example.mydsl.videoGen.VideoDescription;
 import org.xtext.example.mydsl.videoGen.VideoGeneratorModel;
@@ -45,7 +48,7 @@ public class VideoGenTestJava1 {
 		listId.add("id");
 		VideoGeneratorModel videoGen = new VideoGenHelper().loadVideoGenerator(URI.createURI("example1.videogen"));
 
-		for (VideoSeq vs : videoGen.getVideoseqs()) {
+		for (Media vs : videoGen.getMedias()) {
 
 			if (vs instanceof MandatoryVideoSeq) {
 				listId.add(((MandatoryVideoSeq) vs).getDescription().getVideoid());
@@ -119,7 +122,7 @@ public class VideoGenTestJava1 {
 	public void TP4() {
 		VideoGeneratorModel videoGen = new VideoGenHelper().loadVideoGenerator(URI.createURI("example1.videogen"));
 
-		for (VideoSeq vs : videoGen.getVideoseqs()) {
+		for (Media vs : videoGen.getMedias()) {
 
 		}
 
@@ -131,7 +134,7 @@ public class VideoGenTestJava1 {
 
 		VideoGeneratorModel videoGen = new VideoGenHelper().loadVideoGenerator(URI.createURI("example1.videogen"));
 
-		for (VideoSeq vs : videoGen.getVideoseqs()) {
+		for (Media vs : videoGen.getMedias()) {
 
 			if (vs instanceof MandatoryVideoSeq) {
 				location = location + "file " + ((MandatoryVideoSeq) vs).getDescription().getLocation() + "\n";
