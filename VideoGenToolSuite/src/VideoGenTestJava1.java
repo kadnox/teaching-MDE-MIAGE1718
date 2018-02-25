@@ -32,16 +32,6 @@ import org.xtext.example.mydsl.videoGen.VideoSeq;
 
 public class VideoGenTestJava1 {
 
-	@Test
-	public void testInJava1() {
-
-		VideoGeneratorModel videoGen = new VideoGenHelper().loadVideoGenerator(URI.createURI("example1.videogen"));
-		assertNotNull(videoGen);
-
-		System.out.println(videoGen.getInformation().getAuthorName());
-
-	}
-
 	/**
 	 * Dans cette méthode il est possible de récupérer une liste avec toutes les
 	 * variantes possible des vidéos rpovenant d'un fichier .videogen
@@ -54,7 +44,7 @@ public class VideoGenTestJava1 {
 		VideoGeneratorModel videoGen = new VideoGenHelper().loadVideoGenerator(URI.createURI("example1.videogen"));
 
 		for (Media vs : videoGen.getMedias()) {
-
+			//Dans tous les cas la vidéo est ajoutée
 			if (vs instanceof MandatoryVideoSeq) {
 				listId.add(((MandatoryVideoSeq) vs).getDescription().getVideoid());
 				((MandatoryVideoSeq) vs).getDescription().getLocation();
@@ -68,7 +58,8 @@ public class VideoGenTestJava1 {
 					}
 				}
 			}
-
+			
+			//On garde une copie et on ajoute a cette copie la video et on rassemble la copie et l'origine
 			if (vs instanceof OptionalVideoSeq) {
 				listId.add(((OptionalVideoSeq) vs).getDescription().getVideoid());
 				if (listvs.size() == 0) {
@@ -85,6 +76,8 @@ public class VideoGenTestJava1 {
 				}
 
 			}
+			// On garde une copie et on ajoute a cette copie une video altenrantive après
+			// l'autre sur des copie différentes et on rassemble les copies
 			if (vs instanceof AlternativeVideoSeq) {
 				List<VideoDescription> list = ((AlternativeVideoSeq) vs).getVideodescs();
 
@@ -119,7 +112,6 @@ public class VideoGenTestJava1 {
 		try {
 			createCSVFromList(listId, listvs);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -140,15 +132,6 @@ public class VideoGenTestJava1 {
 		FfmpegUtils.applyFilter(inputpath, outputpath);
 	}
 	
-	public void TP4() {
-		VideoGeneratorModel videoGen = new VideoGenHelper().loadVideoGenerator(URI.createURI("example1.videogen"));
-
-		for (Media vs : videoGen.getMedias()) {
-
-		}
-
-	}
-	
 	/**
 	 * Méthode permettant de créer une variante de vidéo al&éatoirement et de la lancer avec VLC
 	 * @throws IOException
@@ -157,7 +140,6 @@ public class VideoGenTestJava1 {
 	public static void TP2() throws IOException, InterruptedException {
 		String location = "";
 		
-
 		VideoGeneratorModel videoGen = new VideoGenHelper().loadVideoGenerator(URI.createURI("example1.videogen"));
 
 		for (Media vs : videoGen.getMedias()) {
@@ -170,8 +152,6 @@ public class VideoGenTestJava1 {
 				double i = Math.random();
 				if (i > 0.5) {
 					location = location + "file " + ((OptionalVideoSeq) vs).getDescription().getLocation() + "\n";
-					
-					
 				}
 			}
 			if (vs instanceof AlternativeVideoSeq) {
@@ -189,7 +169,6 @@ public class VideoGenTestJava1 {
 			f = new FileWriter("videos.txt");
 			f.write(location);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			if (f != null) {
@@ -198,7 +177,6 @@ public class VideoGenTestJava1 {
 		}
 
 		openVideoFromFile("videos.txt", "video1.mp4");
-		
 
 	}
 	
@@ -214,17 +192,6 @@ public class VideoGenTestJava1 {
 		
 		FfmpegUtils.createVideoFromVideos(textpath, outputpath);
 		FfmpegUtils.openVideoVLC(outputpath);
-		/*
-		Runtime runtimeFF = Runtime.getRuntime();
-		String[] tabff = { "/usr/bin/ffmpeg", "-y" ,"-f" ,"concat" ,"-safe","0","-i",textpath,"-c", "copy",  outputpath};
-		Process p = runtimeFF.exec(tabff);
-		
-		p.waitFor();
-
-		String[] tab = { "vlc", outputpath };
-		Process p1 = runtimeFF.exec(tab);
-		p1.waitFor();
-		*/
 	}
 	
 	/**
@@ -303,17 +270,7 @@ public class VideoGenTestJava1 {
 	public static void createImage(String inputPath,String outputPath,int duration,String directory) throws IOException, InterruptedException {
 
 		FfmpegUtils.createImage(inputPath, outputPath, duration, directory);
-		
-		/*
-		Runtime runtimeFF = Runtime.getRuntime();
-		String[] tabff = { "/usr/bin/ffmpeg", "-y","-i", inputPath, "-r", "1" ,"-t" ,"00:00:01","-ss", "00:00:"+ duration, "-f","image2" , directory+"/"+outputPath+".png"};
-		Process p2 = null;
-		System.out.println("l\'image "+outputPath+" est créée");
-		
-		p2 = runtimeFF.exec(tabff);
-		p2.waitFor();
-		*/
-		
+				
 	}
 	/**
 	 * Donne le temps en seconde d'une video
@@ -388,7 +345,6 @@ public class VideoGenTestJava1 {
 				try {
 					createImage(((MandatoryVideoSeq) vs).getDescription().getLocation() , ((MandatoryVideoSeq) vs).getDescription().getVideoid()+"man", 10,dirname);
 				} catch (IOException | InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} 
 			}
@@ -397,7 +353,6 @@ public class VideoGenTestJava1 {
 				try {
 					createImage(((OptionalVideoSeq) vs).getDescription().getLocation(), ((OptionalVideoSeq)vs).getDescription().getVideoid()+"opt", 10, dirname);
 				} catch (IOException | InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
@@ -410,7 +365,6 @@ public class VideoGenTestJava1 {
 					try {
 						createImage(l.getLocation(), l.getVideoid()+"alt", 10,dirname);
 					} catch (IOException | InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -423,19 +377,19 @@ public class VideoGenTestJava1 {
 	public static void main(String[] args) throws InterruptedException {
 		try {
 			TP2();
+			TP3();
 			generateGif("video/jori.mp4", "test.gif");
 			applyFilter("video/jori.mp4", "testFilter.mp4");
+			//les images se trouvents dans le repertoire image
 			creerFichierImages();
-			
 			System.out.println(getDuration("video1.mp4"));
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		
 		
-		TP3();
+		
 	}
 
 }
