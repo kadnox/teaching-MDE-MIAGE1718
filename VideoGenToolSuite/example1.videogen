@@ -12,6 +12,6 @@ VideoGen {
 	}
 
 	mandatory videoseq v4 "video/parc.mp4"
-	mandatory videoseq v4 "video/thoma.mp4"
-	mandatory videoseq v4 "video/bla.mp4"
+	mandatory videoseq v5 "video/thoma.mp4"
+	mandatory videoseq v6 "video/bla.mp4"
 }
