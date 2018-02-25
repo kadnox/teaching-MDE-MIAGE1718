@@ -131,7 +131,12 @@ public class VideoGenTestJava1 {
 		}
 
 	}
-
+	
+	/**
+	 * Méthode permettant de créer une variante de vidéo al&éatoirement et de la lancer avec VLC
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	public static void TP2() throws IOException, InterruptedException {
 		String location = "";
 		
@@ -264,7 +269,7 @@ public class VideoGenTestJava1 {
 	}
 	
 	/**
-	 * 
+	 * Créer un image à partir d'une vidéo
 	 * @param inputPath path de la video ou il faut créer un image
 	 * @param outputPath nom de l'image de sortie
 	 * @param duration duréee pour trouver le snapshot
@@ -281,6 +286,46 @@ public class VideoGenTestJava1 {
 		p2 = runtimeFF.exec(tabff);
 		p2.waitFor();
 	}
+	/**
+	 * Donne le temps en seconde d'une video
+	 * @param inputPath video à calculer
+	 * @return la durée en seconde
+	 * @throws IOException si problème
+	 */
+	public static double getDuration(String inputPath) throws IOException {
+		
+		Runtime runtimeFF = Runtime.getRuntime();
+		String[] tabff = {"/usr/bin/ffmpeg","-i", inputPath, "2>&1"};
+		Process p2 = runtimeFF.exec(tabff);
+
+		BufferedReader stdInput = new BufferedReader(new InputStreamReader(p2.getInputStream()));
+
+		BufferedReader stdError = new BufferedReader(new InputStreamReader(p2.getErrorStream()));
+
+		String s = null;
+		String[] parts= null;
+		String[] parts2= null;
+		
+		while ((s = stdInput.readLine()) != null) {
+			if (s.contains("Duraration:")) {
+				parts = s.split(": ");
+			}
+		}
+	
+		while ((s = stdError.readLine()) != null) {
+			if (s.contains("Duration:")) {
+				parts = s.split(": ");
+			}
+		}
+		parts2 = parts[1].substring(0, 11).split(":");
+		double heure = Double.parseDouble(parts2[0]);
+		double minute = Double.parseDouble(parts2[1]);
+		double seconde = Double.parseDouble(parts2[2]);
+		System.out.println(parts2[1]);
+		
+		return ((heure*60)+minute)*60 + seconde;
+		
+	}
 	
 	
 	/**
@@ -295,7 +340,7 @@ public class VideoGenTestJava1 {
 
 			if (vs instanceof MandatoryVideoSeq) {
 				try {
-					createImage(((MandatoryVideoSeq) vs).getDescription().getLocation() , ((MandatoryVideoSeq) vs).getDescription().getVideoid(), 10,dirname);
+					createImage(((MandatoryVideoSeq) vs).getDescription().getLocation() , ((MandatoryVideoSeq) vs).getDescription().getVideoid()+"man", 10,dirname);
 				} catch (IOException | InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -304,7 +349,7 @@ public class VideoGenTestJava1 {
 
 			if (vs instanceof OptionalVideoSeq) {
 				try {
-					createImage(((OptionalVideoSeq) vs).getDescription().getLocation(), ((OptionalVideoSeq)vs).getDescription().getVideoid(), 10, dirname);
+					createImage(((OptionalVideoSeq) vs).getDescription().getLocation(), ((OptionalVideoSeq)vs).getDescription().getVideoid()+"opt", 10, dirname);
 				} catch (IOException | InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -317,7 +362,7 @@ public class VideoGenTestJava1 {
 
 				for(VideoDescription l : list) {
 					try {
-						createImage(l.getLocation(), l.getVideoid(), 10,dirname);
+						createImage(l.getLocation(), l.getVideoid()+"alt", 10,dirname);
 					} catch (IOException | InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -331,18 +376,16 @@ public class VideoGenTestJava1 {
 	
 	public static void main(String[] args) {
 		try {
-			TP2();
-			creerFichierImages();
+			//TP2();
+			//creerFichierImages();
+			System.out.println(getDuration("video1.mp4"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} 
 		
 		
-		TP3();
+		//TP3();
 	}
 
 }
