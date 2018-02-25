@@ -126,52 +126,17 @@ public class VideoGenTestJava1 {
 
 	//TP3 - export gif d'une video
 	public static void generateGif(String inputpath, String outputpath) throws IOException, InterruptedException {
-		Runtime runtime = Runtime.getRuntime();
 		
-		File f = new File(outputpath);
-				
-		if(f.exists()){
-			String [] cmdRm = {"rm", outputpath};
-			Process p = runtime.exec(cmdRm);
-			p.waitFor();
-		}
+		FfmpegUtils.deleteIfExist(outputpath);
+		FfmpegUtils.generateGif(inputpath, outputpath);
 		
-		String[] cmd = {"/usr/bin/ffmpeg", "-i", inputpath, outputpath };
-		
-		Process p = runtime.exec(cmd);
-		
-		p.waitFor();
-		
-		BufferedReader err = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-		
-		String line;
-        while ((line = err.readLine()) != null) {
-        	System.out.println(line);
-        }
 	}
 	
 	//TP4 - gestion de filtres
 	public static void applyFilter(String inputpath, String outputpath) throws IOException, InterruptedException {
-		Runtime runtime = Runtime.getRuntime(); 
-
-		File f = new File(outputpath);
-
-		if(f.exists()){
-			String [] cmdRm = {"rm", outputpath};
-			Process p = runtime.exec(cmdRm);
-			p.waitFor();
-		}
-
-		String[] cmd = {"/usr/bin/ffmpeg","-i", inputpath, "-vf", "vflip", "-c:a", "copy", outputpath};
-		Process p = runtime.exec(cmd);
-		p.waitFor();
-
-		BufferedReader err = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-		String line;
-		while ((line = err.readLine()) != null) {
-			System.out.println(line);
-		}
-
+		
+		FfmpegUtils.deleteIfExist(outputpath);
+		FfmpegUtils.applyFilter(inputpath, outputpath);
 	}
 	
 	public void TP4() {
@@ -227,7 +192,6 @@ public class VideoGenTestJava1 {
 		}
 
 		openVideoFromFile("videos.txt", "video1.mp4");
-		
 
 	}
 	
@@ -240,6 +204,8 @@ public class VideoGenTestJava1 {
 	 */
 	public static void openVideoFromFile(String textpath, String outputpath) throws IOException, InterruptedException {
 
+		FfmpegUtils.openVideoVLC(textpath, outputpath);
+		/*
 		Runtime runtimeFF = Runtime.getRuntime();
 		String[] tabff = { "/usr/bin/ffmpeg", "-y" ,"-f" ,"concat" ,"-safe","0","-i",textpath,"-c", "copy",  outputpath};
 		Process p = runtimeFF.exec(tabff);
@@ -249,7 +215,7 @@ public class VideoGenTestJava1 {
 		String[] tab = { "vlc", outputpath };
 		Process p1 = runtimeFF.exec(tab);
 		p1.waitFor();
-
+		*/
 	}
 	
 	/**
@@ -324,7 +290,10 @@ public class VideoGenTestJava1 {
 	 * @throws InterruptedException si problème
 	 */
 	public static void createImage(String inputPath,String outputPath,int duration,String directory) throws IOException, InterruptedException {
+
+		FfmpegUtils.createImage(inputPath, outputPath, duration, directory);
 		
+		/*
 		Runtime runtimeFF = Runtime.getRuntime();
 		String[] tabff = { "/usr/bin/ffmpeg", "-y","-i", inputPath, "-r", "1" ,"-t" ,"00:00:01","-ss", "00:00:"+ duration, "-f","image2" , directory+"/"+outputPath+".png"};
 		Process p2 = null;
@@ -332,6 +301,8 @@ public class VideoGenTestJava1 {
 		
 		p2 = runtimeFF.exec(tabff);
 		p2.waitFor();
+		*/
+		
 	}
 	
 	
@@ -385,9 +356,8 @@ public class VideoGenTestJava1 {
 		try {
 			TP2();
 			generateGif("video/jori.mp4", "test.gif");
-			applyFilter("video/blabla.mp4", "testFilter.mp4");
+			applyFilter("video/jori.mp4", "testFilter.mp4");
 			creerFichierImages();
-
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

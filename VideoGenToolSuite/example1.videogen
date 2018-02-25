@@ -1,17 +1,17 @@
 @author "MIAGE 2 students"
 VideoGen {
 	
-	mandatory videoseq v1 "video/hello.mp4"
-	optional videoseq v2 "video/thoma.mp4"
+	mandatory videoseq v1 "video/road.mp4"
+	optional videoseq v2 "video/coffee.mp4"
 
 	alternatives v3 {
-		videoseq v31 "video/bla.mp4"
-		videoseq v32 "video/blabla.mp4"
-		videoseq v33 "video/blabla.mp4"
+		videoseq v31 "video/sea.mp4"
+		videoseq v32 "video/boat.mp4"
+		videoseq v33 "video/car.mp4"
 		
 	}
 
-	mandatory videoseq v4 "video/coucou.mp4"
-	mandatory videoseq v4 "video/coucou.mp4"
-	mandatory videoseq v4 "video/coucou.mp4"
+	mandatory videoseq v4 "video/parc.mp4"
+	mandatory videoseq v4 "video/thoma.mp4"
+	mandatory videoseq v4 "video/bla.mp4"
 }
