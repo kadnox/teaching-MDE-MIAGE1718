@@ -123,6 +123,56 @@ public class VideoGenTestJava1 {
 
 	}
 
+	//TP3 - export gif d'une video
+	public static void generateGif(String inputpath, String outputpath) throws IOException, InterruptedException {
+		Runtime runtime = Runtime.getRuntime();
+		
+		File f = new File(outputpath);
+				
+		if(f.exists()){
+			String [] cmdRm = {"rm", outputpath};
+			Process p = runtime.exec(cmdRm);
+			p.waitFor();
+		}
+		
+		String[] cmd = {"/usr/bin/ffmpeg", "-i", inputpath, outputpath };
+		
+		Process p = runtime.exec(cmd);
+		
+		p.waitFor();
+		
+		BufferedReader err = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+		
+		String line;
+        while ((line = err.readLine()) != null) {
+        	System.out.println(line);
+        }
+	}
+	
+	//TP4 - gestion de filtres
+	public static void applyFilter(String inputpath, String outputpath) throws IOException, InterruptedException {
+		Runtime runtime = Runtime.getRuntime(); 
+
+		File f = new File(outputpath);
+
+		if(f.exists()){
+			String [] cmdRm = {"rm", outputpath};
+			Process p = runtime.exec(cmdRm);
+			p.waitFor();
+		}
+
+		String[] cmd = {"/usr/bin/ffmpeg","-i", inputpath, "-vf", "vflip", "-c:a", "copy", outputpath};
+		Process p = runtime.exec(cmd);
+		p.waitFor();
+
+		BufferedReader err = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+		String line;
+		while ((line = err.readLine()) != null) {
+			System.out.println(line);
+		}
+
+	}
+	
 	public void TP4() {
 		VideoGeneratorModel videoGen = new VideoGenHelper().loadVideoGenerator(URI.createURI("example1.videogen"));
 
@@ -379,10 +429,18 @@ public class VideoGenTestJava1 {
 			//TP2();
 			//creerFichierImages();
 			System.out.println(getDuration("video1.mp4"));
+			TP2();
+			generateGif("video/jori.mp4", "test.gif");
+			applyFilter("video/blabla.mp4", "testFilter.mp4");
+			creerFichierImages();
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		
 		//TP3();

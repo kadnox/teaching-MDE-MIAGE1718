@@ -1,4 +1,5 @@
 file video/hello.mp4
+file video/thoma.mp4
 file 'video/bla.mp4'
 file video/coucou.mp4
 file video/coucou.mp4
