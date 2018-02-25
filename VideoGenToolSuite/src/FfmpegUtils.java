@@ -63,14 +63,7 @@ public final class FfmpegUtils {
 	
 	public static void createImage(String input, String output, int duration, String directory) throws IOException, InterruptedException {
 		String[] cmd = {FFMPEG, "-y","-i", input, "-r", "1" ,"-t" ,"00:00:01","-ss", "00:00:"+ duration, "-f","image2" , directory+"/"+output+".png"};
-		/*
-		Runtime runtimeFF = Runtime.getRuntime();
-		Process p2 = null;
-		System.out.println("l\'image "+output+" est créée");
-		
-		p2 = runtimeFF.exec(cmd);
-		p2.waitFor();
-		*/
+
 		executeCommand(cmd);
 	}
 	
@@ -79,7 +72,5 @@ public final class FfmpegUtils {
 		Process p = Runtime.getRuntime().exec(tabff);
 		return p;
 	}
-	
-	
-	
+
 }
