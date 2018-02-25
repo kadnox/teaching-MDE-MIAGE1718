@@ -114,6 +114,7 @@ public class VideoGenTestJava1 {
 			System.out.println(listvs);
 		}
 		listId.add("size");
+		listId.add("duree");
 		try {
 			createCSVFromList(listId, listvs);
 		} catch (IOException e) {
@@ -297,13 +298,15 @@ public class VideoGenTestJava1 {
 					listIdR.add(v.getVideoid());
 
 				}
-				for (int i = 1; i < nbId - 1; i++) {
+				//- 2 car on ajoute size et duree (oui c'est sale ...)
+				for (int i = 1; i < nbId - 2; i++) {
 					boolean b = listIdR.contains(listId.get(i));
 					bool += Boolean.toString(b).toUpperCase() + ",";
 				}
+				double duree = getDurationVariante(l);
 				System.out.println(bool);
-				System.out.println(cpt + " size " + size);
-				fw.write(cpt + "," + bool + size + "\n");
+				System.out.println(cpt + " size " + size+ " duree: "+duree);
+				fw.write(cpt + "," + bool + size + ","+duree+"\n");
 				cpt++;
 			}
 
@@ -371,9 +374,30 @@ public class VideoGenTestJava1 {
 		double heure = Double.parseDouble(parts2[0]);
 		double minute = Double.parseDouble(parts2[1]);
 		double seconde = Double.parseDouble(parts2[2]);
-		System.out.println(parts2[1]);
 		
 		return ((heure*60)+minute)*60 + seconde;
+		
+	}
+	
+	/**
+	 * Methode permettant d'avoir la durée d'une variante
+	 * 
+	 * N.B cette méthode sera tuilisé dans TP3 pour pouvoir l'appliqué à toutes les variantes
+	 * 
+	 * @param variante une variante possible de videoget
+	 * @return
+	 */
+	public static double getDurationVariante(List<VideoDescription> variante) {
+		double res = 0;
+		for(VideoDescription vs : variante) {
+			try {
+				res += getDuration(vs.getLocation());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return res;
 		
 	}
 	
@@ -429,21 +453,18 @@ public class VideoGenTestJava1 {
 			//TP2();
 			//creerFichierImages();
 			System.out.println(getDuration("video1.mp4"));
-			TP2();
-			generateGif("video/jori.mp4", "test.gif");
-			applyFilter("video/blabla.mp4", "testFilter.mp4");
-			creerFichierImages();
+			//TP2();
+			//generateGif("video/jori.mp4", "test.gif");
+			//applyFilter("video/blabla.mp4", "testFilter.mp4");
+			//creerFichierImages();
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} 
 		
 		
-		//TP3();
+		TP3();
 	}
 
 }
