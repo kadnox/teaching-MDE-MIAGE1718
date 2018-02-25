@@ -48,9 +48,14 @@ public final class FfmpegUtils {
 		executeCommand(cmd);
 	}
 	
-	public static void openVideoVLC(String input, String output) throws IOException, InterruptedException {
+	
+	public static void createVideoFromVideos(String input, String output) throws IOException, InterruptedException {
 		String[] cmd = { FFMPEG, "-y" ,"-f" ,"concat" ,"-safe","0","-i",input,"-c", "copy",  output};
 		executeCommand(cmd);
+
+	}
+	
+	public static void openVideoVLC(String output) throws IOException, InterruptedException {
 		String[] tab = { "vlc", output};
 		executeCommand(tab);
 
@@ -68,4 +73,13 @@ public final class FfmpegUtils {
 		*/
 		executeCommand(cmd);
 	}
+	
+	public static Process getInfo(String inputPath) throws IOException {
+		String[] tabff = {FFMPEG,"-i", inputPath, "2>&1"};
+		Process p = Runtime.getRuntime().exec(tabff);
+		return p;
+	}
+	
+	
+	
 }

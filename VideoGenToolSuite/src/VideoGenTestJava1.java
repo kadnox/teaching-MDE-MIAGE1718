@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
@@ -197,6 +198,7 @@ public class VideoGenTestJava1 {
 		}
 
 		openVideoFromFile("videos.txt", "video1.mp4");
+		
 
 	}
 	
@@ -209,7 +211,9 @@ public class VideoGenTestJava1 {
 	 */
 	public static void openVideoFromFile(String textpath, String outputpath) throws IOException, InterruptedException {
 
-		FfmpegUtils.openVideoVLC(textpath, outputpath);
+		
+		FfmpegUtils.createVideoFromVideos(textpath, outputpath);
+		FfmpegUtils.openVideoVLC(outputpath);
 		/*
 		Runtime runtimeFF = Runtime.getRuntime();
 		String[] tabff = { "/usr/bin/ffmpeg", "-y" ,"-f" ,"concat" ,"-safe","0","-i",textpath,"-c", "copy",  outputpath};
@@ -319,17 +323,14 @@ public class VideoGenTestJava1 {
 	 */
 	public static double getDuration(String inputPath) throws IOException {
 		
-		Runtime runtimeFF = Runtime.getRuntime();
-		String[] tabff = {"/usr/bin/ffmpeg","-i", inputPath, "2>&1"};
-		Process p2 = runtimeFF.exec(tabff);
+		Process p2 = FfmpegUtils.getInfo(inputPath);
+		String s = null;
+		String[] parts= null;
+		String[] parts2= null;
 
 		BufferedReader stdInput = new BufferedReader(new InputStreamReader(p2.getInputStream()));
 
 		BufferedReader stdError = new BufferedReader(new InputStreamReader(p2.getErrorStream()));
-
-		String s = null;
-		String[] parts= null;
-		String[] parts2= null;
 		
 		while ((s = stdInput.readLine()) != null) {
 			if (s.contains("Duraration:")) {
@@ -365,8 +366,7 @@ public class VideoGenTestJava1 {
 			try {
 				res += getDuration(vs.getLocation());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.err.println(e.getMessage());
 			}
 		}
 		return res;
